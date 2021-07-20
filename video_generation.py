@@ -1,16 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates.
-# 
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-# 
-#     http://www.apache.org/licenses/LICENSE-2.0
-# 
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+
 import os
 import glob
 import sys
@@ -60,16 +48,12 @@ class VideoGenerator:
                     # If input is a video file
                     if os.path.isfile(self.args.input_path):
                         frames_folder = os.path.join(self.args.output_path, "frames")
-                        attention_folder = os.path.join(
-                            self.args.output_path, "attention"
-                        )
+                        attention_folder = os.path.join(self.args.output_path, "attention")
 
                         os.makedirs(frames_folder, exist_ok=True)
                         os.makedirs(attention_folder, exist_ok=True)
 
-                        self._extract_frames_from_video(
-                            self.args.input_path, frames_folder
-                        )
+                        self._extract_frames_from_video(self.args.input_path, frames_folder)
 
                         self._inference(
                             frames_folder,
@@ -82,17 +66,12 @@ class VideoGenerator:
 
                     # If input is a folder of already extracted frames
                     if os.path.isdir(self.args.input_path):
-                        attention_folder = os.path.join(
-                            self.args.output_path, "attention"
-                        )
-
+                        attention_folder = os.path.join(self.args.output_path, "attention")
                         os.makedirs(attention_folder, exist_ok=True)
 
                         self._inference(self.args.input_path, attention_folder)
 
-                        self._generate_video_from_images(
-                            attention_folder, self.args.output_path
-                        )
+                        self._generate_video_from_images(attention_folder, self.args.output_path)
 
                 # If input path doesn't exists
                 else:
@@ -150,7 +129,7 @@ class VideoGenerator:
     def _inference(self, inp: str, out: str):
         print(f"Generating attention images to {out}")
 
-        for img_path in tqdm(sorted(glob.glob(os.path.join(inp, "*.jpg")))):
+        for img_path in tqdm(sorted(glob.glob(os.path.join(inp, "*.png")))):
             with open(img_path, "rb") as f:
                 img = Image.open(f)
                 img = img.convert("RGB")
@@ -226,7 +205,7 @@ class VideoGenerator:
             )
 
             # save attentions heatmaps
-            fname = os.path.join(out, "attn-" + os.path.basename(img_path))
+            fname = os.path.join(out, "attn-" + os.path.basename(img_path).replace(".png", ".jpg"))
             plt.imsave(
                 fname=fname,
                 arr=sum(
@@ -308,7 +287,7 @@ def parse_args():
     )
     parser.add_argument(
         "--pretrained_weights",
-        default="",
+        default="pretraModels/dino_deitsmall8_pretrain.pth",
         type=str,
         help="Path to pretrained weights to load.",
     )
@@ -328,7 +307,7 @@ def parse_args():
     )
     parser.add_argument(
         "--output_path",
-        default="./",
+        default="outputs/videos",
         type=str,
         help="""Path to store a folder of frames and / or a folder of attention images.
             and / or a final video. Default to current directory.""",
@@ -367,7 +346,6 @@ def parse_args():
         choices=["mp4", "avi"],
         help="Format of generated video (mp4 or avi).",
     )
-
     return parser.parse_args()
 
 
