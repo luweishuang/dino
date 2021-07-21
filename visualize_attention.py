@@ -101,7 +101,7 @@ if __name__ == '__main__':
     parser.add_argument('--patch_size', default=8, type=int, help='Patch resolution of the model.')
     parser.add_argument('--pretrained_weights', default='pretraModels/dino_deitsmall8_pretrain.pth', type=str, help="pretrained weights.")
     parser.add_argument("--checkpoint_key", default="teacher", type=str, help='Key to use in the checkpoint (example: "teacher")')
-    parser.add_argument("--image_path", default='inputs/00162.png', type=str, help="Path of the image to load.")
+    parser.add_argument("--image_path", default='inputs/sre.jpg', type=str, help="Path of the image to load.")
     parser.add_argument("--image_size", default=(480, 480), type=int, nargs="+", help="Resize image.")
     parser.add_argument('--output_dir', default='outputs', help='Path where to save visualizations.')
     parser.add_argument("--threshold", type=float, default=None, help="""We visualize masks
